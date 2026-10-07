@@ -1,0 +1,13 @@
+talk_id,speaker_id,year,season,num_words
+A01,S1,2025,April,1000
+A02,S1,2025,April,1200
+A03,S1,2025,October,1400
+A04,S1,2025,October,1600
+A05,S2,2025,April,2000
+A06,S2,2025,October,2200
+A07,S2,2026,April,2400
+A08,S3,2026,April,1800
+A09,S3,2026,October,2000
+A10,S4,2026,April,1500
+A11,S4,2026,October,1700
+A12,S9,2026,October,2100

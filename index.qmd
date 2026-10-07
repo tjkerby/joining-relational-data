@@ -1,0 +1,62 @@
+---
+title: "Joining relational data"
+subtitle: "What happens to one row when we combine tables?"
+---
+
+This site collects the materials for the STAT 386 lesson on joining relational
+data with pandas: the slide deck, slide-aligned follow-along code, a
+15-minute pair activity with solutions, teaching notes, and the fictional
+datasets that support them.
+
+## Setup and use
+
+Open this folder in Positron and run `uv sync`. Select the project Python
+environment. Run cells in [follow_along.py](follow_along.py) at the matching
+slide headings; each cell names its slide number. To run everything, use:
+
+```bash
+uv run python follow_along.py
+```
+
+The slide deck includes the complete output for each follow-along display,
+with indexes omitted and missing values labeled NA.
+[follow_along.ipynb](follow_along.ipynb) contains the same examples with
+captured output. [explore_joins.py](explore_joins.py) adds deeper examples.
+
+## Materials
+
+| Material | Purpose |
+|---|---|
+| [Slides](slides.qmd) | Lecture deck with Venn diagrams and worked join examples |
+| [Pair activity](activity.qmd) | Instructions and data dictionary for the 15-minute pair activity |
+| [Teaching notes](teaching-notes.qmd) | Timing, answers, and discussion guidance |
+| [student_activity.ipynb](student_activity.ipynb) | Activity starter notebook |
+| [activity_solutions.py](activity_solutions.py), [activity_solutions.ipynb](activity_solutions.ipynb) | Solutions; attempt the activity before opening them |
+| `data/` | Seven fictional datasets |
+| `assets/` | Editable SVG Venn diagrams |
+
+The data dictionary on the [activity page](activity.qmd) defines the
+`record_status` rule used in the activity repair.
+
+## Editing the deck
+
+The deck source is [slides.qmd](slides.qmd) with [lecture.css](lecture.css).
+Static code listings and output tables require no Python execution to render;
+update outputs when you edit code or data. The deck has 32 core slides and
+three optional reference slides.
+
+Venn circles represent distinct join keys and shading shows retained keys.
+Matching pairs determine output row counts. All names, groups, measurements,
+and conferences are fictional teaching data.
+
+## Building the site
+
+With Quarto installed, run `quarto render`. The site HTML is written to
+`docs/`, ready to publish (for example, from GitHub Pages serving the `docs`
+folder of the repository).
+
+## References
+
+- https://pandas.pydata.org/docs/reference/api/pandas.merge.html
+- https://pandas.pydata.org/docs/reference/api/pandas.Series.eq.html
+- https://pandas.pydata.org/docs/user_guide/merging.html

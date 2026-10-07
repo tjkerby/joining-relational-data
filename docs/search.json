@@ -1,0 +1,380 @@
+[
+  {
+    "objectID": "teaching-notes.html",
+    "href": "teaching-notes.html",
+    "title": "Joining relational data: teaching notes",
+    "section": "",
+    "text": "STAT 386, October 7, 2026. Planned duration: 50 minutes."
+  },
+  {
+    "objectID": "teaching-notes.html#central-takeaway",
+    "href": "teaching-notes.html#central-takeaway",
+    "title": "Joining relational data: teaching notes",
+    "section": "Central takeaway",
+    "text": "Central takeaway\nA join matches records through keys. Key uniqueness and match coverage determine whether the result preserves the intended row unit and answers the question."
+  },
+  {
+    "objectID": "teaching-notes.html#pacing",
+    "href": "teaching-notes.html#pacing",
+    "title": "Joining relational data: teaching notes",
+    "section": "Pacing",
+    "text": "Pacing\n\n\n\n\n\n\n\n\nMinutes\nSlides\nWork\n\n\n\n\n0-4\n1-3\nRetrieve row identity\n\n\n4-13\n4-9\nMaster-file motivation, separate tables, keys, Venn diagrams\n\n\n13-25\n10-20\nJoins, matching labels, mask, summary, repeated-key pairs\n\n\n25-40\n21-22\nPair activity\n\n\n40-47\n23-27\nDebrief, validation, repair, changed weighting\n\n\n47-50\n28-32\nComposite-key connection, checks, exit response\n\n\n\nSlides 33-35 are optional references. Preserve the 15-minute activity. Answer slides need only 20-30 seconds. If needed, let students explore the complete composite-key example after class."
+  },
+  {
+    "objectID": "teaching-notes.html#presentation-and-coding",
+    "href": "teaching-notes.html#presentation-and-coding",
+    "title": "Joining relational data: teaching notes",
+    "section": "Presentation and coding",
+    "text": "Presentation and coding\nAll files live in one repo. Run follow_along.py cell by cell at the matching slide headings. Complete displayed results appear on the slides, including the eight-row flawed join and twelve-row repair and composite-key outputs. Slides omit indexes and show NA for missing values. The notebook contains captured outputs. explore_joins.py supports deeper exploration. Activity solutions live beside the starter. Ask students to attempt the activity before reading them.\nShow the Venn diagrams before code. Talk keys are S1/S2/S3, speaker keys S1/S2/S4. Shading explains key retention. Return to pairs of table rows to explain counts.\nIntroduce indicator=True and define both, left_only, and right_only before filtering. Then select the _merge column, apply .eq(“left_only”) to obtain a Boolean Series, and use .loc[mask] to retain True rows. Explain that .eq is elementwise equality and is equivalent to == for this comparison. Predict each of the five mask values, then inspect the full one-row unmatched result."
+  },
+  {
+    "objectID": "teaching-notes.html#answers-and-discussion",
+    "href": "teaching-notes.html#answers-and-discussion",
+    "title": "Joining relational data: teaching notes",
+    "section": "Answers and discussion",
+    "text": "Answers and discussion\nOpening: a long keyword row represents a talk-keyword pair. Both columns are needed to identify a measurement. Connecting speaker attributes requires another table because talks and speakers have different observational units.\nSmall demonstration: talks has five rows. S1 has three talks, S2 one, S3 one. The clean speaker table has S1, S2, and unused S4. Left joins yield five rows, inner four, right five, and outer six. T5/S3 is unmatched. There are no missing keys in these data. NA on a slide denotes a missing value in the output.\nThe clean summary is A: three talks, mean 1200 words. B: one talk, mean 2400. Unknown: one talk, mean 1600. Each mean weights talks equally. A speaker with more talks therefore contributes more to an across-talk mean. Explain that dropna=False avoids silently excluding the unknown group from a grouped result.\nDuplicate prediction: S1 contributes 3 times 2 = 6 pairs, and the full join has eight rows. The original word total is 7600 and mean 1520. The flawed total is 11200 and mean 1400. Duplicating the three short S1 talks changes weighting.\nActivity: twelve input talks, twelve clean joined rows, eleven matched talks. A12/S9 is unmatched. S5 has no talk and is absent from the left join. Group A has six talks and mean 1500, group B five and 1960, unknown one and mean 2100. Default grouping would omit the unknown group. The conflicting lookup adds a retired B record for S1. Four S1 talks each match twice, giving sixteen rows. A01-A04 repeat, representing four distinct affected talks.\nRepair: the data dictionary explicitly makes current records authoritative for the exercise. Filter by record_status before joining. Then many_to_one validation succeeds and the output returns to twelve rows. S9 still lacks metadata. Do not repair by keeping an arbitrary first row or by removing joined rows. In real historical data, a time-dependent classification may require a different matching rule.\nComposite prediction: joining conference metadata on year alone yields 24 rows. Year plus season yields 12 rows with a unique location per talk. This identifies a conference, not a particular session. Session metadata would need an extra session key.\nExit: enrollments should be the left table, catalog the right, with a left join on course_id, validate=many_to_one, and indicator=True. Repeated right keys can multiply enrollment rows. left_only finds unmatched enrollments. The validator would reject repeated right keys before producing that flawed result."
+  },
+  {
+    "objectID": "teaching-notes.html#conceptual-distinctions",
+    "href": "teaching-notes.html#conceptual-distinctions",
+    "title": "Joining relational data: teaching notes",
+    "section": "Conceptual distinctions",
+    "text": "Conceptual distinctions\n\nA left join retains every left row but may repeat it.\nCardinality concerns key uniqueness, whereas coverage concerns matching.\nAn indicator reports a match even when another metadata field is missing.\nA many-to-many relationship can be legitimate when the output unit is a pair.\nA primary key should be unique and nonmissing. Foreign references can fail in imported CSVs even though a database would normally enforce integrity.\npandas matches missing keys on both sides. The optional reference example demonstrates that behavior. Null keys require inspection before a join.\nMissing metadata after a join can reflect absent records, formatting problems, or a matched record with incomplete fields. Retention and missingness are separate analysis decisions."
+  },
+  {
+    "objectID": "teaching-notes.html#bridge-to-missing-data",
+    "href": "teaching-notes.html#bridge-to-missing-data",
+    "title": "Joining relational data: teaching notes",
+    "section": "Bridge to missing data",
+    "text": "Bridge to missing data\nAsk: “When a value is missing, what happened in the process that produced the data?” Today students see one concrete mechanism: no matching lookup record. Next lecture can expand to the indicator R and the dependence of missingness on Y and other covariates X. Do not introduce MCAR/MAR/MNAR terminology here."
+  },
+  {
+    "objectID": "teaching-notes.html#sources",
+    "href": "teaching-notes.html#sources",
+    "title": "Joining relational data: teaching notes",
+    "section": "Sources",
+    "text": "Sources\n\npandas merge API: https://pandas.pydata.org/docs/reference/api/pandas.merge.html\npandas merging guide: https://pandas.pydata.org/docs/user_guide/merging.html\n\nAll datasets are authored fictional teaching examples. They do not describe actual speakers, conference locations, or group characteristics."
+  },
+  {
+    "objectID": "slides.html#review-row-identity",
+    "href": "slides.html#review-row-identity",
+    "title": "Joining relational data",
+    "section": "Review: row identity",
+    "text": "Review: row identity\n\n\n\ntalk_id\nkeyword\ncount\n\n\n\n\nT1\nfaith\n4\n\n\nT1\nprayer\n2\n\n\nT2\nfaith\n1\n\n\nT2\nprayer\n3\n\n\n\nWith a partner: What does one row represent? Which columns identify it?\nWhat would go wrong if we pivoted using talk_id alone?\n\nGive 45 seconds. Retrieve the prior lesson rather than reteach it. The row unit is a talk-keyword combination. talk_id alone repeats. Ask them to name the pair before revealing the answer."
+  },
+  {
+    "objectID": "slides.html#review-the-identifying-columns",
+    "href": "slides.html#review-the-identifying-columns",
+    "title": "Joining relational data",
+    "section": "Review: the identifying columns",
+    "text": "Review: the identifying columns\nOne row represents one talk-keyword combination.\nThe key is (talk_id, keyword). Each pair appears once.\nwide = long.pivot(\n    index=\"talk_id\", columns=\"keyword\", values=\"count\"\n)\n\n\n\ntalk_id\nfaith\nprayer\n\n\n\n\nT1\n4\n2\n\n\nT2\n1\n3\n\n\n\n\nThe pivot uses the identifying pair to locate a value. Today a join uses keys to locate related records in another table. Do not spend time rerunning pivot."
+  },
+  {
+    "objectID": "slides.html#a-question-that-needs-another-table",
+    "href": "slides.html#a-question-that-needs-another-table",
+    "title": "Joining relational data",
+    "section": "A question that needs another table",
+    "text": "A question that needs another table\nHow does average talk length differ between speaker groups?\n\n\ntalks: one row per talk\n\n\n\ntalk_id\nspeaker_id\nnum_words\n\n\n\n\nT1\nS1\n1000\n\n\nT2\nS1\n1200\n\n\nT3\nS1\n1400\n\n\nT4\nS2\n2400\n\n\nT5\nS3\n1600\n\n\n\n\nspeakers: one row per speaker\n\n\n\nspeaker_id\nspeaker\ngroup\n\n\n\n\nS1\nAvery\nA\n\n\nS2\nBlair\nB\n\n\nS4\nCasey\nB\n\n\n\n\nAll names, groups, and values are fictional teaching data.\n\nAsk which table contains the measurements and which contains the grouping variable. The speaker table includes S4 without a talk. Talks include S3 without a speaker record. Do not reveal those consequences yet."
+  },
+  {
+    "objectID": "slides.html#one-master-file-repeats-speaker-information",
+    "href": "slides.html#one-master-file-repeats-speaker-information",
+    "title": "Joining relational data",
+    "section": "One master file repeats speaker information",
+    "text": "One master file repeats speaker information\nA single CSV is convenient when someone has already prepared it for analysis.\n\n\n\ntalk_id\nspeaker_id\nnum_words\nspeaker\ngroup\n\n\n\n\nT1\nS1\n1000\nAvery\nA\n\n\nT2\nS1\n1200\nAvery\nA\n\n\nT3\nS1\n1400\nAvery\nA\n\n\nT4\nS2\n2400\nBlair\nB\n\n\n\nAvery’s details repeat in three rows. A correction would require updating each copy.\nIf only one copy changes, the same speaker can have conflicting information.\n\nAsk how many copies of Avery’s details appear. A prepared CSV is a useful analysis product. Repeated authoritative records create maintenance problems. All values are fictional."
+  },
+  {
+    "objectID": "slides.html#separate-tables-support-reliable-updates",
+    "href": "slides.html#separate-tables-support-reliable-updates",
+    "title": "Joining relational data",
+    "section": "Separate tables support reliable updates",
+    "text": "Separate tables support reliable updates\nA speaker table stores a speaker’s details once. Each talk references the speaker ID.\nA new speaker can enter the directory before giving a talk. A new talk can reference an existing speaker.\nMany talks can share the same speaker, conference, and session records.\nA join creates the combined table we need for analysis. We can export that result as a CSV.\n\nDistinguish maintaining data from preparing an analysis table. Separate tables reduce redundancy, allow independent additions, and support integrity constraints in databases. Avoid normalization jargon. Changing historical characteristics may need dated records."
+  },
+  {
+    "objectID": "slides.html#keys",
+    "href": "slides.html#keys",
+    "title": "Joining relational data",
+    "section": "Keys",
+    "text": "Keys\n\n\n\n\n\n\n\n\nTerm\nMeaning\nExample\n\n\n\n\nPrimary key\nUniquely identifies a row in its table\ntalk_id in talks\n\n\nForeign key\nReferences a key in another table\nspeaker_id in talks\n\n\nComposite key\nUses several columns together\nyear + season\n\n\n\nspeaker_id repeats in talks and is unique in our clean speakers table.\nCSV files do not enforce these relationships. We check them.\n\nA primary key must be unique and nonmissing. Foreign-key references should have a parent record in well-formed relational data, but imported files may violate that expectation. The unmatched S3 is a coverage problem to investigate. Year plus season identifies our fictional conferences, not an individual session."
+  },
+  {
+    "objectID": "slides.html#cardinality-depends-on-the-join-key",
+    "href": "slides.html#cardinality-depends-on-the-join-key",
+    "title": "Joining relational data",
+    "section": "Cardinality depends on the join key",
+    "text": "Cardinality depends on the join key\n\n\n\n\n\n\n\n\nRelationship\nKey uniqueness\nExample\n\n\n\n\nOne-to-one\nUnique on both sides\nTalks + one transcript per talk\n\n\nMany-to-one\nRepeats left, unique right\nTalks + speakers\n\n\nOne-to-many\nUnique left, repeats right\nSpeakers + talks\n\n\nMany-to-many\nRepeats on both sides\nTalks + multiple speaker records\n\n\n\nFor talks on the left and speakers on the right, we expect many-to-one.\nPredict whether the intended row unit will survive the join.\n\nAlways state the left and right direction. One-to-many may be perfectly legitimate when we want one speaker-talk row. Many-to-many can also be legitimate, but all matching pairs affect the row meaning. Explain it further after the pair-multiplication example."
+  },
+  {
+    "objectID": "slides.html#join-types-as-overlapping-sets-of-keys",
+    "href": "slides.html#join-types-as-overlapping-sets-of-keys",
+    "title": "Joining relational data",
+    "section": "Join types as overlapping sets of keys",
+    "text": "Join types as overlapping sets of keys\n\n\n\nLeft join\n\n\n\nAll talk keys: S1, S2, S3\n\n\n\n\nInner join\n\n\n\nShared keys: S1, S2\n\n\n\n\nRight join\n\n\n\nAll speaker keys: S1, S2, S4\n\n\n\n\nOuter join\n\n\n\nEither table: S1, S2, S3, S4\n\n\n\nBlue regions show retained keys. Repeated keys can create multiple matching rows.\n\nShow before join code. Circles are distinct speaker IDs in each table. S1/S2 overlap, S3 is only in talks, S4 only in speakers. Ask which region retains every talk key. The diagrams explain retention. Matching pairs explain output row counts later."
+  },
+  {
+    "objectID": "slides.html#prediction-a-left-join",
+    "href": "slides.html#prediction-a-left-join",
+    "title": "Joining relational data",
+    "section": "Prediction: a left join",
+    "text": "Prediction: a left join\n\n\nLeft: talks\n\n\n\ntalk_id\nspeaker_id\nnum_words\n\n\n\n\nT1\nS1\n1000\n\n\nT2\nS1\n1200\n\n\nT3\nS1\n1400\n\n\nT4\nS2\n2400\n\n\nT5\nS3\n1600\n\n\n\n\nRight: speakers\n\n\n\nspeaker_id\nspeaker\ngroup\n\n\n\n\nS1\nAvery\nA\n\n\nS2\nBlair\nB\n\n\nS4\nCasey\nB\n\n\n\n\nWe will match speaker_id and retain every talk.\nHow many rows? Which talk lacks speaker information? Does S4 appear?\n\nGive 45 seconds before revealing. Expected five rows because the right key is unique. T5 lacks metadata. S4 does not appear. Repeated left keys are expected and do not alone increase the row count."
+  },
+  {
+    "objectID": "slides.html#left-join-every-talk-remains",
+    "href": "slides.html#left-join-every-talk-remains",
+    "title": "Joining relational data",
+    "section": "Left join: every talk remains",
+    "text": "Left join: every talk remains\nleft = pd.merge(\n    talks, speakers, on=\"speaker_id\", how=\"left\"\n)\nleft\n\n\n\ntalk_id\nspeaker_id\nnum_words\nspeaker\ngroup\n\n\n\n\nT1\nS1\n1000\nAvery\nA\n\n\nT2\nS1\n1200\nAvery\nA\n\n\nT3\nS1\n1400\nAvery\nA\n\n\nT4\nS2\n2400\nBlair\nB\n\n\nT5\nS3\n1600\nNA\nNA\n\n\n\n5 talks remain. T5 has no matching speaker record.\n\nTalks is the left argument. how controls retention, on supplies equality keys. Matching uses key values regardless of row position. NA is our display label for a pandas missing value. A left join retains every left row, but can repeat it if several right records match. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#prediction-an-inner-join",
+    "href": "slides.html#prediction-an-inner-join",
+    "title": "Joining relational data",
+    "section": "Prediction: an inner join",
+    "text": "Prediction: an inner join\n\n\ntalks\n\n\n\ntalk_id\nspeaker_id\nnum_words\n\n\n\n\nT1\nS1\n1000\n\n\nT2\nS1\n1200\n\n\nT3\nS1\n1400\n\n\nT4\nS2\n2400\n\n\nT5\nS3\n1600\n\n\n\n\nspeakers\n\n\n\nspeaker_id\nspeaker\ngroup\n\n\n\n\nS1\nAvery\nA\n\n\nS2\nBlair\nB\n\n\nS4\nCasey\nB\n\n\n\n\nWe now retain only matching pairs.\nWhich talk disappears? How many rows remain? What population does the result describe?\n\nGive 30 seconds. Students should identify T5 and predict four rows. Connect the retained population to known speaker metadata."
+  },
+  {
+    "objectID": "slides.html#inner-join-matched-talks-only",
+    "href": "slides.html#inner-join-matched-talks-only",
+    "title": "Joining relational data",
+    "section": "Inner join: matched talks only",
+    "text": "Inner join: matched talks only\ninner = pd.merge(\n    talks, speakers, on=\"speaker_id\", how=\"inner\"\n)\ninner\n\n\n\ntalk_id\nspeaker_id\nnum_words\nspeaker\ngroup\n\n\n\n\nT1\nS1\n1000\nAvery\nA\n\n\nT2\nS1\n1200\nAvery\nA\n\n\nT3\nS1\n1400\nAvery\nA\n\n\nT4\nS2\n2400\nBlair\nB\n\n\n\n4 rows remain. T5 disappears because S3 has no speaker record.\n\nAn inner join changes coverage. Losing a record can be intentional, but must match the analysis question. Default merge how is inner, so specify how explicitly. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#the-_merge-column-records-where-keys-match",
+    "href": "slides.html#the-_merge-column-records-where-keys-match",
+    "title": "Joining relational data",
+    "section": "The _merge column records where keys match",
+    "text": "The _merge column records where keys match\naudited = pd.merge(\n    talks, speakers, on=\"speaker_id\", how=\"left\",\n    indicator=True,\n)\naudited[[\"talk_id\", \"speaker_id\", \"group\", \"_merge\"]]\n\n\n\ntalk_id\nspeaker_id\ngroup\n_merge\n\n\n\n\nT1\nS1\nA\nboth\n\n\nT2\nS1\nA\nboth\n\n\nT3\nS1\nA\nboth\n\n\nT4\nS2\nB\nboth\n\n\nT5\nS3\nNA\nleft_only\n\n\n\nindicator=True adds _merge. Its values describe the source of each match.\n\n_merge is a new categorical column, not an index or command. The projection shows every row. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#the-three-matching-labels",
+    "href": "slides.html#the-three-matching-labels",
+    "title": "Joining relational data",
+    "section": "The three matching labels",
+    "text": "The three matching labels\n\n\n\nValue in _merge\nMeaning\n\n\n\n\nboth\nThe key matched a row in each input table\n\n\nleft_only\nThe retained left row has no right-table match\n\n\nright_only\nThe retained right row has no left-table match\n\n\n\nOur left join contains both and left_only rows. It cannot contain right_only rows.\nAn outer or right join would retain S4 as right_only.\nA row labeled both can still have missing metadata in another column.\n\nDifferentiate category definitions from actual values. value_counts may show right_only with zero because the category exists. The labels describe key matching, not completeness of every metadata field. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#equality-produces-a-mask-then-loc-keeps-rows",
+    "href": "slides.html#equality-produces-a-mask-then-loc-keeps-rows",
+    "title": "Joining relational data",
+    "section": "Equality produces a mask, then loc keeps rows",
+    "text": "Equality produces a mask, then loc keeps rows\nmask = audited[\"_merge\"].eq(\"left_only\")\nunmatched = audited.loc[mask]\nunmatched[[\"talk_id\", \"speaker_id\", \"_merge\"]]\n\n\n\n\n\ntalk_id\n_merge\nmask\n\n\n\n\nT1\nboth\nFalse\n\n\nT2\nboth\nFalse\n\n\nT3\nboth\nFalse\n\n\nT4\nboth\nFalse\n\n\nT5\nleft_only\nTrue\n\n\n\n\n\nunmatched\n\n\n\ntalk_id\nspeaker_id\n_merge\n\n\n\n\nT5\nS3\nleft_only\n\n\n\n\n\n.eq(“left_only”) compares each value with the string “left_only”. It is equivalent to == “left_only”.\n.loc[mask] keeps the rows whose mask is True. Here, only T5 remains.\n\nRead three stages: select a column, compare element by element, use the Boolean Series to filter. Predict the five mask values before running. Show the full mask and filtered row. Reference: https://pandas.pydata.org/docs/reference/api/pandas.Series.eq.html"
+  },
+  {
+    "objectID": "slides.html#a-summary-after-joining",
+    "href": "slides.html#a-summary-after-joining",
+    "title": "Joining relational data",
+    "section": "A summary after joining",
+    "text": "A summary after joining\nsummary = (\n    left.groupby(\"group\", dropna=False, as_index=False)\n    .agg(n_talks=(\"talk_id\", \"size\"),\n         mean_words=(\"num_words\", \"mean\"))\n)\n\n\n\ngroup\nn_talks\nmean_words\n\n\n\n\nA\n3\n1200\n\n\nB\n1\n2400\n\n\nNA\n1\n1600\n\n\n\ndropna=False retains the talk whose group is unknown.\nThese means weight talks equally. They do not weight speakers equally.\n\nDefault groupby excludes missing grouping values. Keep the unknown group visible rather than silently excluding T5. Ask why group A has three talks but one speaker. Summaries of talks and summaries of speakers answer different questions."
+  },
+  {
+    "objectID": "slides.html#prediction-a-duplicated-speaker-key",
+    "href": "slides.html#prediction-a-duplicated-speaker-key",
+    "title": "Joining relational data",
+    "section": "Prediction: a duplicated speaker key",
+    "text": "Prediction: a duplicated speaker key\n\n\nThree talks for S1\n\n\n\ntalk_id\nspeaker_id\nnum_words\n\n\n\n\nT1\nS1\n1000\n\n\nT2\nS1\n1200\n\n\nT3\nS1\n1400\n\n\n\n\nTwo speaker records for S1\n\n\n\nspeaker_id\nspeaker\ngroup\n\n\n\n\nS1\nAvery\nA\n\n\nS1\nAvery\nB\n\n\n\n\nWe match speaker_id again. How many rows will S1 contribute?\nHow many rows will the full left join contain?\n\nGive 45 seconds. S1 contributes six pairs. Full join has eight rows: six for S1, one for S2, one unmatched S3. Both right rows match even though group differs."
+  },
+  {
+    "objectID": "slides.html#each-matching-pair-produces-a-row",
+    "href": "slides.html#each-matching-pair-produces-a-row",
+    "title": "Joining relational data",
+    "section": "Each matching pair produces a row",
+    "text": "Each matching pair produces a row\nbad = pd.merge(talks, speakers_conflicting,\n               on=\"speaker_id\", how=\"left\")\nbad[[\"talk_id\", \"speaker_id\", \"num_words\", \"group\"]]\n\n\n\n\ntalk_id\nspeaker_id\nnum_words\ngroup\n\n\n\n\nT1\nS1\n1000\nA\n\n\nT1\nS1\n1000\nB\n\n\nT2\nS1\n1200\nA\n\n\nT2\nS1\n1200\nB\n\n\nT3\nS1\n1400\nA\n\n\nT3\nS1\n1400\nB\n\n\nT4\nS2\n2400\nB\n\n\nT5\nS3\n1600\nNA\n\n\n\n\nS1 contributes 3 × 2 = 6 pairs. The complete left join contains 8 rows.\n\nRead T1 twice, then T2 twice. The output unit is now a talk-speaker-record pair. The database has no basis for picking A over B. A left join promises retention, not unchanged row count. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#join-size-from-key-frequencies",
+    "href": "slides.html#join-size-from-key-frequencies",
+    "title": "Joining relational data",
+    "section": "Join size from key frequencies",
+    "text": "Join size from key frequencies\nFor a key with m left rows and n right rows, an inner join produces m × n rows.\n\n\n\nLeft frequency m\nRight frequency n\nMatching pairs\n\n\n\n\n3\n1\n3\n\n\n3\n2\n6\n\n\n3\n0\n0\n\n\n\nA left join contributes m × max(n, 1) rows for that key.\nThe unmatched S3 talk contributes one row to the left join.\n\nSum contributions across left keys for total left-join size. Formulas apply to these equality joins with complete keys. Appendix notes that pandas can match missing keys. The frequency rule explains the result rather than treating duplication as random behavior. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#pair-activity-enriching-talks",
+    "href": "slides.html#pair-activity-enriching-talks",
+    "title": "Joining relational data",
+    "section": "Pair activity: enriching talks",
+    "text": "Pair activity: enriching talks\nOpen student_activity.ipynb in this repo and run its setup cell.\nGoal: retain every talk and compare mean word count by speaker group.\n\nPredict the relationship and the left-join row count.\nJoin the clean speaker table to talks.\nIdentify unmatched talks.\nSummarize talk counts and mean word counts by group.\n\nUse the first 7 minutes. Keep the unknown group visible.\n\nStart a 15-minute activity here. Students open the starter in the shared repo. Ask them to attempt the activity before opening the solutions. Encourage a quick written prediction before code. Hint for unknown groups is dropna=False. Pairs can inspect objects in Positron."
+  },
+  {
+    "objectID": "slides.html#pair-activity-an-unexpected-result",
+    "href": "slides.html#pair-activity-an-unexpected-result",
+    "title": "Joining relational data",
+    "section": "Pair activity: an unexpected result",
+    "text": "Pair activity: an unexpected result\nRun the supplied join with speakers_conflicting.\n\nExplain the new row count using key frequencies.\nIdentify the talks that appear more than once.\nInspect the conflicting speaker records.\nPropose a repair using the documented record_status rule.\n\nUse the remaining 8 minutes. Prepare to explain why the repair is justified.\n\nFor this fictional exercise record_status=current means the authoritative record for our analysis and retired means superseded. Students should inspect before filtering. If students need help, point them to duplicated(“speaker_id”, keep=False). Do not suggest blind drop_duplicates on speaker_id."
+  },
+  {
+    "objectID": "slides.html#activity-debrief-the-clean-join",
+    "href": "slides.html#activity-debrief-the-clean-join",
+    "title": "Joining relational data",
+    "section": "Activity debrief: the clean join",
+    "text": "Activity debrief: the clean join\n\n\n\nCheck\nResult\n\n\n\n\nInput talks\n12\n\n\nJoined rows\n12\n\n\nMatched talks\n11\n\n\nUnmatched talk\nA12, speaker S9\n\n\n\n\n\n\ngroup\nn_talks\nmean_words\n\n\n\n\nA\n6\n1500\n\n\nB\n5\n1960\n\n\nNA\n1\n2100\n\n\n\nThe group counts sum to all 12 talks.\n\nA has six talks with mean 1500.0, B five with mean 1960.0, unknown one with mean 2100.0. Speaker S5 has no talks and never enters this left join. Ask how an inner join would change coverage: eleven rows."
+  },
+  {
+    "objectID": "slides.html#activity-debrief-the-extra-rows",
+    "href": "slides.html#activity-debrief-the-extra-rows",
+    "title": "Joining relational data",
+    "section": "Activity debrief: the extra rows",
+    "text": "Activity debrief: the extra rows\n\n\n\nspeaker_id\nspeaker\ngroup\nrecord_status\n\n\n\n\nS1\nAvery\nA\ncurrent\n\n\nS1\nAvery\nB\nretired\n\n\n\nS1 has 4 talks and 2 matching records, producing 8 rows.\nThe join contains 16 rows. A01, A02, A03, and A04 each appear twice.\nThe output mixes current and retired classifications for the same speaker.\n\nRow count is 8 for S1 plus 8 for every other talk. Duplicate rows are matching pairs, not an implementation error. record_status exists on the lookup table and must inform selection before joining."
+  },
+  {
+    "objectID": "slides.html#validation-enforces-the-expected-relationship",
+    "href": "slides.html#validation-enforces-the-expected-relationship",
+    "title": "Joining relational data",
+    "section": "Validation enforces the expected relationship",
+    "text": "Validation enforces the expected relationship\npd.merge(\n    activity_talks, speakers_conflicting,\n    on=\"speaker_id\", how=\"left\",\n    validate=\"many_to_one\",\n)\nMergeError: Merge keys are not unique in right dataset; not a many-to-one merge\nmany_to_one checks the right key. It permits repeated speaker IDs in talks.\nValidation checks key uniqueness. It does not guarantee that every talk matches.\n\nHere talks and speakers_conflicting refer to the activity objects. Error wording is simplified for readability. One_to_one checks both sides, one_to_many checks the left, many_to_one checks the right. many_to_many permits repetition and performs no uniqueness check. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#a-repair-based-on-the-data-meaning",
+    "href": "slides.html#a-repair-based-on-the-data-meaning",
+    "title": "Joining relational data",
+    "section": "A repair based on the data meaning",
+    "text": "A repair based on the data meaning\n\n\ncurrent = speakers_conflicting.loc[\n    speakers_conflicting[\"record_status\"]\n    .eq(\"current\")\n]\nfixed = pd.merge(\n    activity_talks, current,\n    on=\"speaker_id\", how=\"left\",\n    validate=\"many_to_one\",\n    indicator=True,\n)\nfixed[[\"talk_id\", \"group\", \"_merge\"]]\n\n\n\n\n\ntalk_id\ngroup\n_merge\n\n\n\n\nA01\nA\nboth\n\n\nA02\nA\nboth\n\n\nA03\nA\nboth\n\n\nA04\nA\nboth\n\n\nA05\nB\nboth\n\n\nA06\nB\nboth\n\n\nA07\nB\nboth\n\n\nA08\nA\nboth\n\n\nA09\nA\nboth\n\n\nA10\nB\nboth\n\n\nA11\nB\nboth\n\n\nA12\nNA\nleft_only\n\n\n\n\n\nThe status rule restores 12 rows. A12 still lacks a speaker record.\n\nThis repair applies only because the exercise defines current as authoritative for this analysis. In real longitudinal data, an old record may be the right one for an earlier talk. A date-aware matching rule could then be necessary. Never claim keeping first or latest is universally correct."
+  },
+  {
+    "objectID": "slides.html#row-multiplication-changes-the-analysis",
+    "href": "slides.html#row-multiplication-changes-the-analysis",
+    "title": "Joining relational data",
+    "section": "Row multiplication changes the analysis",
+    "text": "Row multiplication changes the analysis\nReturn to the five-talk demonstration.\n\n\n\nQuantity\nOriginal talks\nJoin with conflicting speakers\n\n\n\n\nRows\n5\n8\n\n\nTotal word count\n7,600\n11,200\n\n\nMean word count\n1,520\n1,400\n\n\n\nDuplicating S1 gives its shorter talks more weight.\nA successful merge can still produce a misleading summary.\n\nCalculate across all rows here, including unmatched T5. The three S1 talks sum to 3600, which the flawed join counts twice. Group classification also changes because the added row has group B. Ask how the table would affect a claim about mean length."
+  },
+  {
+    "objectID": "slides.html#prediction-a-composite-key",
+    "href": "slides.html#prediction-a-composite-key",
+    "title": "Joining relational data",
+    "section": "Prediction: a composite key",
+    "text": "Prediction: a composite key\n\n\nTalks (first three)\n\n\n\ntalk_id\nyear\nseason\n\n\n\n\nA01\n2025\nApril\n\n\nA02\n2025\nApril\n\n\nA03\n2025\nOctober\n\n\n\n\nconference_metadata\n\n\n\nyear\nseason\nlocation\n\n\n\n\n2025\nApril\nNorth Hall\n\n\n2025\nOctober\nSouth Hall\n\n\n2026\nApril\nEast Hall\n\n\n2026\nOctober\nWest Hall\n\n\n\n\nWe want one conference location attached to each talk.\nWhat happens if we join using year alone? Which columns identify a conference?\n\nGive 30 seconds. Year repeats twice in the metadata table. Joining year alone creates two matches per talk, doubles the full activity table to 24 rows, and assigns two possible locations."
+  },
+  {
+    "objectID": "slides.html#composite-key-year-and-season",
+    "href": "slides.html#composite-key-year-and-season",
+    "title": "Joining relational data",
+    "section": "Composite key: year and season",
+    "text": "Composite key: year and season\n\n\nwith_location = pd.merge(\n    activity_talks, conference_metadata,\n    on=[\"year\", \"season\"],\n    how=\"left\",\n    validate=\"many_to_one\",\n)\nwith_location[[\n    \"talk_id\", \"year\",\n    \"season\", \"location\"\n]]\n\n\n\n\n\ntalk_id\nyear\nseason\nlocation\n\n\n\n\nA01\n2025\nApril\nNorth Hall\n\n\nA02\n2025\nApril\nNorth Hall\n\n\nA03\n2025\nOctober\nSouth Hall\n\n\nA04\n2025\nOctober\nSouth Hall\n\n\nA05\n2025\nApril\nNorth Hall\n\n\nA06\n2025\nOctober\nSouth Hall\n\n\nA07\n2026\nApril\nEast Hall\n\n\nA08\n2026\nApril\nEast Hall\n\n\nA09\n2026\nOctober\nWest Hall\n\n\nA10\n2026\nApril\nEast Hall\n\n\nA11\n2026\nOctober\nWest Hall\n\n\nA12\n2026\nOctober\nWest Hall\n\n\n\n\n\nAll 12 talks have one location. Joining on year alone would yield 24 rows.\n\nAll twelve output rows appear for the selected columns. year and season identify a conference, not a session. activity_talks avoids overwriting the five-row example. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#a-checking-routine-for-joins",
+    "href": "slides.html#a-checking-routine-for-joins",
+    "title": "Joining relational data",
+    "section": "A checking routine for joins",
+    "text": "A checking routine for joins\nBefore joining: describe the intended row unit and expected relationship.\n\n\ntalks[\"talk_id\"].is_unique\nspeakers[\"speaker_id\"].is_unique\nspeakers[\"speaker_id\"].isna().sum()\n\n\n\n\nCheck\nOutput\n\n\n\n\nUnique talk IDs\nTrue\n\n\nUnique speaker IDs\nTrue\n\n\nMissing speaker keys\n0\n\n\n\n\nDuring joining: specify keys, retention, and validate.\nAfter joining: check row counts, row identity, and unmatched records.\n\nThe routine is conceptual, not a claim that these three expressions check all data. Composite key uniqueness uses duplicated([“year”, “season”]). Check key types and formatting when valid-looking records do not match. Missing keys require explicit attention because pandas may match them."
+  },
+  {
+    "objectID": "slides.html#exit-check",
+    "href": "slides.html#exit-check",
+    "title": "Joining relational data",
+    "section": "Exit check",
+    "text": "Exit check\nYou have one row per enrollment with course_id.\nThe course catalog should have one row per course_id.\n\nHow do you retain every enrollment and attach the course title?\nWhich validation rule fits?\nWhat could make the joined table longer?\nHow would you find enrollments without catalog matches?\n\nNext time: What do missing values tell us about how the data were collected?\n\nGive about one minute for a written response. The course catalog analogy checks transfer beyond the conference example. Reveal the next slide after responses. Bridge from joining-generated missingness to missingness theory without claiming that all missing values have the same mechanism."
+  },
+  {
+    "objectID": "slides.html#exit-check-one-working-answer",
+    "href": "slides.html#exit-check-one-working-answer",
+    "title": "Joining relational data",
+    "section": "Exit check: one working answer",
+    "text": "Exit check: one working answer\nenriched = pd.merge(\n    enrollments, catalog, on=\"course_id\", how=\"left\",\n    validate=\"many_to_one\", indicator=True,\n)\nunmatched = enriched.loc[\n    enriched[\"_merge\"].eq(\"left_only\")\n]\nDuplicate matching course IDs in the catalog can repeat an enrollment.\nThe intended result keeps one row per enrollment.\n\nAnswer slide. The code is a transfer example, not an executed conference-data cell. many_to_one will reject a nonunique right key before producing the duplicated result. Student uniqueness may require student_id plus course_id plus term or a dedicated enrollment_id. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#reference-names-and-overlapping-columns",
+    "href": "slides.html#reference-names-and-overlapping-columns",
+    "title": "Joining relational data",
+    "section": "Reference: names and overlapping columns",
+    "text": "Reference: names and overlapping columns\n\n\ndirectory = speakers.rename(\n    columns={\"speaker_id\": \"person_id\"}\n)\nrenamed = pd.merge(\n    talks, directory,\n    left_on=\"speaker_id\",\n    right_on=\"person_id\",\n    how=\"left\",\n    validate=\"many_to_one\",\n)\nrenamed[[\"talk_id\", \"person_id\", \"speaker\"]]\n\n\n\n\ntalk_id\nperson_id\nspeaker\n\n\n\n\nT1\nS1\nAvery\n\n\nT2\nS1\nAvery\n\n\nT3\nS1\nAvery\n\n\nT4\nS2\nBlair\n\n\nT5\nNA\nNA\n\n\n\n\nleft_on and right_on name each key. suffixes labels overlapping non-key columns.\n\nOptional reference after the main lecture. The runnable demo illustrates different key names. Overlapping fields need interpretation before deciding which to keep. No live walkthrough unless a question requires it. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#reference-missing-keys",
+    "href": "slides.html#reference-missing-keys",
+    "title": "Joining relational data",
+    "section": "Reference: missing keys",
+    "text": "Reference: missing keys\nleft_keys = pd.DataFrame({\"key\": [None], \"x\": [1]})\nright_keys = pd.DataFrame({\"key\": [None], \"y\": [2]})\npd.merge(left_keys, right_keys, on=\"key\", how=\"inner\")\n\n\n\nkey\nx\ny\n\n\n\n\nNA\n1\n2\n\n\n\npandas matches missing keys on both sides.\nCheck missing keys before relying on the match indicator.\n\nOptional reference. Unlike typical SQL NULL equality behavior, pandas matches missing keys to missing keys. A primary key should be nonmissing. The missingness belongs to the key in this example, not simply to a metadata value. Reference: https://pandas.pydata.org/docs/reference/api/pandas.merge.html"
+  },
+  {
+    "objectID": "slides.html#reference-joining-and-stacking",
+    "href": "slides.html#reference-joining-and-stacking",
+    "title": "Joining relational data",
+    "section": "Reference: joining and stacking",
+    "text": "Reference: joining and stacking\n\n\n\n\n\n\n\nGoal\nOperation\n\n\n\n\nAttach related fields using keys\npd.merge(…)\n\n\nStack tables with the same row unit\npd.concat([april, october], ignore_index=True)\n\n\n\nA join matches records. Concatenation stacks the rows supplied to it.\nBefore either operation, decide what one resulting row should represent.\n\nOptional reference. axis=1 concatenation aligns indexes, which differs from matching speaker IDs. Avoid teaching concat as an alternate key join. Reference: https://pandas.pydata.org/docs/user_guide/merging.html"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Joining relational data",
+    "section": "",
+    "text": "This site collects the materials for the STAT 386 lesson on joining relational data with pandas: the slide deck, slide-aligned follow-along code, a 15-minute pair activity with solutions, teaching notes, and the fictional datasets that support them."
+  },
+  {
+    "objectID": "index.html#setup-and-use",
+    "href": "index.html#setup-and-use",
+    "title": "Joining relational data",
+    "section": "Setup and use",
+    "text": "Setup and use\nOpen this folder in Positron and run uv sync. Select the project Python environment. Run cells in follow_along.py at the matching slide headings; each cell names its slide number. To run everything, use:\nuv run python follow_along.py\nThe slide deck includes the complete output for each follow-along display, with indexes omitted and missing values labeled NA. follow_along.ipynb contains the same examples with captured output. explore_joins.py adds deeper examples."
+  },
+  {
+    "objectID": "index.html#materials",
+    "href": "index.html#materials",
+    "title": "Joining relational data",
+    "section": "Materials",
+    "text": "Materials\n\n\n\nMaterial\nPurpose\n\n\n\n\nSlides\nLecture deck with Venn diagrams and worked join examples\n\n\nPair activity\nInstructions and data dictionary for the 15-minute pair activity\n\n\nTeaching notes\nTiming, answers, and discussion guidance\n\n\nstudent_activity.ipynb\nActivity starter notebook\n\n\nactivity_solutions.py, activity_solutions.ipynb\nSolutions; attempt the activity before opening them\n\n\ndata/\nSeven fictional datasets\n\n\nassets/\nEditable SVG Venn diagrams\n\n\n\nThe data dictionary on the activity page defines the record_status rule used in the activity repair."
+  },
+  {
+    "objectID": "index.html#editing-the-deck",
+    "href": "index.html#editing-the-deck",
+    "title": "Joining relational data",
+    "section": "Editing the deck",
+    "text": "Editing the deck\nThe deck source is slides.qmd with lecture.css. Static code listings and output tables require no Python execution to render; update outputs when you edit code or data. The deck has 32 core slides and three optional reference slides.\nVenn circles represent distinct join keys and shading shows retained keys. Matching pairs determine output row counts. All names, groups, measurements, and conferences are fictional teaching data."
+  },
+  {
+    "objectID": "index.html#building-the-site",
+    "href": "index.html#building-the-site",
+    "title": "Joining relational data",
+    "section": "Building the site",
+    "text": "Building the site\nWith Quarto installed, run quarto render. The site HTML is written to docs/, ready to publish (for example, from GitHub Pages serving the docs folder of the repository)."
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Joining relational data",
+    "section": "References",
+    "text": "References\n\nhttps://pandas.pydata.org/docs/reference/api/pandas.merge.html\nhttps://pandas.pydata.org/docs/reference/api/pandas.Series.eq.html\nhttps://pandas.pydata.org/docs/user_guide/merging.html"
+  },
+  {
+    "objectID": "activity.html",
+    "href": "activity.html",
+    "title": "Pair activity: joining relational data",
+    "section": "",
+    "text": "Work with a partner for 15 minutes. Open student_activity.ipynb in Positron and run its setup cell. All names, conferences, groups, locations, and measurements are fictional."
+  },
+  {
+    "objectID": "activity.html#the-question",
+    "href": "activity.html#the-question",
+    "title": "Pair activity: joining relational data",
+    "section": "The question",
+    "text": "The question\nHow does average talk length differ between speaker groups? Retain every talk in the data, including talks whose speaker information is unavailable."
+  },
+  {
+    "objectID": "activity.html#first-7-minutes",
+    "href": "activity.html#first-7-minutes",
+    "title": "Pair activity: joining relational data",
+    "section": "First 7 minutes",
+    "text": "First 7 minutes\n\nInspect talks and speakers. State the row unit and key for each table. Predict the relationship on speaker_id and the number of rows in a left join.\nCreate enriched by joining speaker information onto talks. Specify the key, retention rule, expected relationship, and a match indicator.\nCreate unmatched containing talks without a speaker-table match.\nSummarize talk count and mean word count by group. Keep the unknown group visible. State whether the means weight talks or speakers equally."
+  },
+  {
+    "objectID": "activity.html#remaining-8-minutes",
+    "href": "activity.html#remaining-8-minutes",
+    "title": "Pair activity: joining relational data",
+    "section": "Remaining 8 minutes",
+    "text": "Remaining 8 minutes\n\nRun the supplied join with speakers_conflicting. Explain its row count using the number of S1 rows on each side.\nDisplay the talks that repeat and count the distinct affected talks.\nInspect every lookup record for the repeated speaker key. What do the records say, and what evidence supports a repair?\nApply the documented record_status rule, then validate and audit again. Explain which problems the repair resolves and which remain."
+  },
+  {
+    "objectID": "activity.html#data-dictionary",
+    "href": "activity.html#data-dictionary",
+    "title": "Pair activity: joining relational data",
+    "section": "Data dictionary",
+    "text": "Data dictionary\n\n\n\nFile\nOne row represents\nIntended key\n\n\n\n\nactivity_talks.csv\nOne talk\ntalk_id\n\n\nactivity_speakers.csv\nOne speaker\nspeaker_id\n\n\nactivity_speakers_conflicting.csv\nOne speaker record\nspeaker_id + record_status\n\n\nconference_metadata.csv\nOne conference\nyear + season\n\n\n\nnum_words measures talk length in words. group is an arbitrary fictional speaker category, A or B. record_status=\"current\" identifies the authoritative speaker classification for this exercise. \"retired\" identifies a superseded record. Select current records before combining them with the talks. This is an exercise-specific rule, not a general rule for historical data."
+  },
+  {
+    "objectID": "activity.html#hints",
+    "href": "activity.html#hints",
+    "title": "Pair activity: joining relational data",
+    "section": "Hints",
+    "text": "Hints\n\nUse on=\"speaker_id\" to name the key explicitly.\nvalidate=\"many_to_one\" checks the lookup key’s uniqueness.\nindicator=True supplies _merge for inspecting matches.\ngroupby(..., dropna=False) keeps an unknown group visible.\nduplicated(\"speaker_id\", keep=False) marks every row for a repeated key.\nRow multiplication counts all matching pairs.\n\nBe ready to explain your result, not just display your code."
+  }
+]

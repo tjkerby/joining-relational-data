@@ -1,0 +1,7 @@
+speaker_id,speaker,group,record_status
+S1,Avery,A,current
+S2,Blair,B,current
+S3,Casey,A,current
+S4,Drew,B,current
+S5,Emery,A,current
+S1,Avery,B,retired

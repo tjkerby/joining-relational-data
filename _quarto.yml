@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - slides.qmd
+    - activity.qmd
+    - teaching-notes.qmd
+  resources:
+    - "*.py"
+    - "*.ipynb"
+    - "data/*"
+    - "assets/*"
+
+website:
+  title: "STAT 386: Joining relational data"
+  description: "Slides, follow-along code, pair activity, and teaching notes for joining relational data with pandas."
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: slides.qmd
+        text: Slides
+      - href: activity.qmd
+        text: Activity
+      - href: teaching-notes.qmd
+        text: Teaching notes
+
+format:
+  html:
+    theme: cosmo

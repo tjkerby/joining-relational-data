@@ -1,0 +1,6 @@
+talk_id,speaker_id,num_words
+T1,S1,1000
+T2,S1,1200
+T3,S1,1400
+T4,S2,2400
+T5,S3,1600
